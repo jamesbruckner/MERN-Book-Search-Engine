@@ -16,7 +16,7 @@ app.use(cors());
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: authMiddleware
+  // context: authMiddleware
 });
 
 const startApolloServer = async () => {
@@ -31,9 +31,9 @@ const startApolloServer = async () => {
 
 
   if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../client/build')));
+    app.use(express.static(path.join(__dirname, '../client/dist')));
     app.get('*', (req, res) => {
-      res.sendFile(path.join(_dirname, '../client/build/index.html'))
+      res.sendFile(path.join(_dirname, '../client/dist/index.html'))
     })
   }
   
@@ -48,3 +48,5 @@ const startApolloServer = async () => {
 
 
 startApolloServer();
+
+

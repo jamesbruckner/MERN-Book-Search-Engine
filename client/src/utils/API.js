@@ -1,51 +1,55 @@
-// route to get logged in user's info (needs the token)
-import { gql, useMutation, useQuery } from '@apollo/client';
-import { LOGIN_USER, ADD_USER, SAVE_BOOK, REMOVE_BOOK } from './mutations';
-import { GET_ME } from './queries'
+// // route to get logged in user's info (needs the token)
+// import { gql, useMutation, useQuery } from '@apollo/client';
+// import { LOGIN_USER, ADD_USER, SAVE_BOOK, REMOVE_BOOK } from './mutations';
+// import { GET_ME } from './queries'
 
-export const getMe = () => {
-  const { data, loading, error } = useQuery(GET_ME);
-  return { data, loading, error};
+export const getMe = (token) => {
+  return fetch('/api/users/me', {
+    headers: {
+      'Content-Type': 'application.json',
+    authorization: `Bearer ${token}`,    
+    },
+  });
 };
 
-export const useAddUser = () => {
-  const [addUserMutation, { data, loading, error }] = useMutation(ADD_USER);
-  return {
-    addUser: (username, email, password) => addUserMutation({ variables: { username, email, password} }),
-    data,
-    loading,
-    error,
-  };
+export const useAddUser = (userData) => {
+  return fetch('/api/users', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData),
+  });
 };
 
-export const loginUser = () => {
-  const [loginUserMutation, { data, loading, error }] = useMutation(LOGIN_USER);
-  return {
-    loginUser: (email, password) => loginUserMutation({ variables: { email, password } }),
-    data,
-    loading,
-    error,
-  };
+export const loginUser = (userData) => {
+  return fetch('/api/users/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData)
+  });
 };
 
-export const saveBook = () => {
-  const [saveBookMutation, { data, loading, error }] = useMutation(SAVE_BOOK);
-  return {
-    saveBook: (bookInput) => saveBookMutation({ variables: { bookInput } }),
-    data,
-    loading,
-    error,
-  };
+export const saveBook = (bookData, token) => {
+  return fetch('/api/users', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(bookData),
+  });
 };
 
-export const useDeleteBook = () => {
-  const [removeBookMutation, { data, loading, error }] = useMutation(REMOVE_BOOK);
-  return {
-    deleteBook: (bookId) => removeBookMutation({ variables: { bookId }} ),
-    data,
-    loading,
-    error,
-  };
+export const deleteBook = (bookId, token) => {
+  return fetch(`api/users/books/${bookId}`, {
+    method: 'DELETE',
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 // make a search to google books api
